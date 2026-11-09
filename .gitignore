@@ -6,3 +6,10 @@ __pycache__/
 node_modules/
 .vercel/
 *.log
+# app flow screenshots: regenerate with `npm run flow`; only the ones the README shows are kept
+renders/app/*
+!renders/app/desktop_04_picked.png
+!renders/app/desktop_13_planet.png
+!renders/app/desktop_19_tryon.png
+!renders/app/desktop_23_recap.png
+!renders/app/mobile_10_today.png

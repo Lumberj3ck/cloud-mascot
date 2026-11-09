@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "shots": "node scripts/shoot.mjs"
+    "shots": "node scripts/shoot.mjs",
+    "flow": "node scripts/flow.mjs renders/app both",
+    "test": "node --test tests/"
   },
   "devDependencies": {
     "@gltf-transform/cli": "4.5.1",

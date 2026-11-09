@@ -2,159 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Nimbus's Room</title>
-  <link rel="icon" href="data:,">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#3b2c63">
+  <meta name="description" content="Nimbus: give each planet a few small daily tasks and watch your little world grow.">
+  <title>Nimbus</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 48'%3E%3Cpath d='M14.5 44h35a12.5 12.5 0 0 0 3.3-24.6A17.5 17.5 0 0 0 19.6 15 14.5 14.5 0 0 0 14.5 44z' fill='%23b79be0'/%3E%3C/svg%3E">
+  <link rel="preload" href="assets/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/cloudscape-v1.jpg" as="image">
+  <link rel="stylesheet" href="app.css">
   <script type="importmap">
-  {
-    "imports": {
-      "three": "./vendor/three/build/three.module.min.js",
-      "three/addons/": "./vendor/three/examples/jsm/"
-    }
-  }
+  { "imports": { "three": "./vendor/three/build/three.module.min.js", "three/addons/": "./vendor/three/examples/jsm/" } }
   </script>
-  <style>
-    :root {
-      --bg: #f6e9e4; --card: rgba(255, 252, 250, .82); --line: rgba(160, 130, 170, .18);
-      --ink: #463a4c; --soft: #8b7d92; --lav: #b79be0; --lav-2: #e9dcf6; --peach: #ffb38a; --pink: #f4a6c0;
-      --ok: #9fd2b0; --radius: 20px; --shadow: 0 10px 30px rgba(90, 60, 100, .12), 0 1px 0 rgba(255,255,255,.7) inset;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); overflow: hidden;
-      font: 15px/1.35 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif; }
-    #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
-    .card { position: fixed; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-      box-shadow: var(--shadow); backdrop-filter: blur(14px) saturate(1.2); -webkit-backdrop-filter: blur(14px) saturate(1.2); }
-    button { font: inherit; color: inherit; cursor: pointer; }
-
-    /* stats */
-    .stats { top: 16px; left: 16px; width: 260px; padding: 14px 16px 12px; }
-    .stats .row { display: flex; align-items: baseline; justify-content: space-between; }
-    .stats h1 { margin: 0; font-size: 22px; letter-spacing: .01em; }
-    .stats .day { color: var(--soft); font-size: 13px; }
-    .streak { display: flex; align-items: center; gap: 8px; margin: 8px 0 10px; font-size: 14px; color: var(--soft); }
-    .streak b { font-size: 26px; color: var(--ink); line-height: 1; }
-    .streak svg { width: 22px; height: 22px; }
-    .streak .meta { margin-left: auto; font-size: 12px; text-align: right; line-height: 1.25; }
-    .bar { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 8px; margin: 6px 0; font-size: 12px; color: var(--soft); }
-    .track { height: 9px; border-radius: 9px; background: #efe5f2; overflow: hidden; }
-    .track i { display: block; height: 100%; border-radius: inherit; transition: width .6s cubic-bezier(.2,.8,.2,1); }
-    #joyBar { background: linear-gradient(90deg, #f7b6cf, #f48fb5); }
-    #energyBar { background: linear-gradient(90deg, #c8b4f0, #a88be0); }
-    .mood { margin-top: 8px; font-size: 13px; color: var(--soft); font-style: italic; }
-
-    /* habits */
-    .habits { top: 16px; right: 16px; width: 286px; padding: 14px 14px 10px; }
-    .habits header { display: flex; align-items: center; gap: 10px; margin: 0 2px 8px; }
-    .habits h2 { margin: 0; font-size: 17px; }
-    .habits .sub { color: var(--soft); font-size: 12px; }
-    .ring { --p: 0; margin-left: auto; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center;
-      background: conic-gradient(var(--lav) calc(var(--p) * 360deg), #efe5f2 0); font-size: 11px; font-weight: 700; }
-    .ring span { width: 30px; height: 30px; border-radius: 50%; background: #fffaf8; display: grid; place-items: center; }
-    .habits ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-    .habit { width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 14px;
-      border: 1px solid var(--line); background: #fffaf8; text-align: left; transition: background .2s, transform .12s; }
-    .habit:hover { background: #fbf3fb; }
-    .habit:active { transform: scale(.98); }
-    .habit .ico { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; background: var(--lav-2); }
-    .habit svg { width: 18px; height: 18px; fill: none; stroke: #8c6fc0; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    .habit .lbl { flex: 1; }
-    .habit .chk { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #dccbe8; display: grid; place-items: center; transition: .2s; }
-    .habit .chk svg { stroke: #fff; stroke-width: 2.6; opacity: 0; }
-    .habit.done { background: #f6f0fc; }
-    .habit.done .lbl { color: var(--soft); text-decoration: line-through; text-decoration-color: rgba(140,120,150,.5); }
-    .habit.done .chk { background: var(--lav); border-color: var(--lav); }
-    .habit.done .chk svg { opacity: 1; }
-    .tip { margin: 8px 4px 2px; font-size: 11.5px; color: var(--soft); }
-
-    /* actions */
-    .actions { left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 6px; padding: 7px; border-radius: 22px; }
-    .actions button { border: 0; background: transparent; padding: 10px 16px; border-radius: 16px; font-weight: 600; white-space: nowrap; }
-    .actions button:hover { background: #f3eaf7; }
-    .actions .primary { background: var(--ink); color: #fff; }
-    .actions .primary:hover { background: #5a4c61; }
-
-    /* lab */
-    .lab { left: 16px; bottom: 18px; width: 300px; max-height: 0; overflow: hidden; padding: 0 12px; opacity: 0;
-      transition: max-height .35s ease, opacity .25s, padding .25s; }
-    .lab.open { max-height: 70vh; padding: 12px; opacity: 1; overflow: auto; }
-    .lab h3 { margin: 6px 2px 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--soft); }
-    .lab .btns { display: flex; flex-wrap: wrap; gap: 4px; }
-    .lab button { border: 1px solid var(--line); background: #fffaf8; border-radius: 10px; padding: 4px 9px; font-size: 12.5px; }
-    .lab button:hover { background: #f3eaf7; }
-
-    /* toasts */
-    #toasts { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 8px; justify-items: center; pointer-events: none; }
-    .toast { padding: 10px 16px; border-radius: 16px; background: rgba(70, 58, 76, .92); color: #fff; font-weight: 600; font-size: 14px;
-      box-shadow: 0 10px 30px rgba(60, 40, 70, .25); animation: in .35s cubic-bezier(.2,.9,.3,1.3); transition: opacity .5s, transform .5s; }
-    .toast.big { background: linear-gradient(135deg, #b79be0, #f4a6c0); }
-    .toast.unlock { background: linear-gradient(135deg, #ffcf7a, #ffa98a); color: #4a3020; }
-    .toast.warn { background: #7d8aa8; }
-    .toast.out { opacity: 0; transform: translateY(-8px); }
-    @keyframes in { from { opacity: 0; transform: translateY(-10px) scale(.96); } }
-
-    body.shot .card, body.shot #toasts { display: none; }
-    body.shot.ui .card:not(.lab) { display: block; }
-    body.shot.ui .actions { display: flex; }
-
-    @media (max-width: 820px) {
-      .stats { width: auto; right: 16px; padding: 10px 14px; }
-      .stats .bars { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
-      .stats .mood { display: none; }
-      .streak { margin: 4px 0 2px; }
-      .habits { top: auto; bottom: 84px; left: 16px; right: 16px; width: auto; padding: 10px; }
-      .habits ul { grid-template-columns: 1fr 1fr; }
-      .habit { padding: 7px 8px; font-size: 13px; gap: 7px; }
-      .habit .ico { width: 24px; height: 24px; }
-      .tip { display: none; }
-      .actions { left: 16px; right: 16px; transform: none; justify-content: space-between; }
-      .actions button { padding: 10px 10px; flex: 1; }
-      .lab { left: 16px; right: 16px; width: auto; bottom: 84px; }
-    }
-  </style>
 </head>
-<body>
-  <canvas id="scene" aria-label="Nimbus's room: tap Nimbus to pet, tap the floor to make it hop there"></canvas>
+<body class="booting">
+  <canvas id="scene" aria-label="Nimbus and its planets. Drag to look around."></canvas>
+  <div id="labels" class="labels"></div>
+  <div id="bubble" class="bubble" role="status" aria-live="polite"></div>
 
-  <header class="card stats">
-    <div class="row"><h1 id="name">Nimbus</h1><span class="day" id="day">Day 1</span></div>
-    <div class="streak">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c4 4.5 6.5 8 6.5 11.5A6.5 6.5 0 0 1 5.5 13.5c0-2 1-3.8 2.6-5.3.3 1.6 1.2 2.6 2.4 2.9C10 8.5 10.6 5.2 12 2Z" fill="#ffa45c"/><ellipse cx="12" cy="15.5" rx="2.6" ry="3.4" fill="#ffd27a"/></svg>
-      <b id="streak">0</b><span>day streak</span>
-      <span class="meta">best <b style="font-size:13px" id="best">0</b><br>shields <b style="font-size:13px" id="shields">1</b></span>
+  <header class="topbar ui">
+    <div class="brand" id="brand"></div>
+    <div class="top-actions">
+      <button class="pill dust" id="dustBtn" aria-label="Stardust, open the wardrobe"></button>
+      <div class="pill streak" id="streakPill"></div>
+      <button class="iconbtn" id="wardrobeBtn" aria-label="Wardrobe"></button>
+      <button class="iconbtn" id="menuBtn" aria-label="Menu" aria-haspopup="menu" aria-expanded="false"></button>
     </div>
-    <div class="bars">
-      <div class="bar"><span>Joy</span><div class="track"><i id="joyBar"></i></div></div>
-      <div class="bar"><span>Energy</span><div class="track"><i id="energyBar"></i></div></div>
-    </div>
-    <div class="mood" id="moodLabel"></div>
   </header>
 
-  <aside class="card habits" aria-label="Today's habits">
-    <header>
-      <div><h2>Today</h2><div class="sub">each habit feeds Nimbus sunshine</div></div>
-      <div class="ring" id="ring"><span id="progress">0/4</span></div>
-    </header>
-    <ul id="habitList"></ul>
-    <p class="tip">Tap Nimbus to pet · tap the floor to call it · tap the bed to sleep</p>
-  </aside>
+  <aside class="sheet today ui" id="today" aria-label="Today"></aside>
+  <aside class="sheet side ui" id="planetSheet" aria-label="Planet" hidden></aside>
+  <aside class="sheet side ui" id="shopSheet" aria-label="Wardrobe" hidden></aside>
 
-  <nav class="card actions" aria-label="Actions">
-    <button id="petBtn">Pet</button>
-    <button id="sleepBtn">Sleep</button>
-    <button id="dayBtn" class="primary">End day →</button>
-    <button id="labBtn" title="Animation lab">Lab</button>
-  </nav>
+  <div class="menu" id="menu" role="menu" hidden></div>
+  <section class="onboard" id="onboard" aria-label="Welcome" hidden></section>
+  <dialog class="dialog" id="dialog"></dialog>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
 
-  <section class="card lab" id="lab" aria-label="Animation lab">
-    <h3>Moods</h3><div class="btns" id="labMoods"></div>
-    <h3>Clips</h3><div class="btns" id="labClips"></div>
-    <h3>Faces</h3><div class="btns" id="labFaces"></div>
-    <h3>Demo</h3>
-    <div class="btns"><button id="labStreak">Perfect day</button><button id="labUnlock">Unlock all</button><button id="resetBtn">Reset</button></div>
-  </section>
-
-  <div id="toasts" role="status" aria-live="polite"></div>
-  <script type="module" src="js/game.js"></script>
+  <div class="splash" id="splash" role="status" aria-live="polite">
+    <div class="splash-inner">
+      <svg class="mark" viewBox="0 0 64 48" aria-hidden="true"><path d="M14.5 44h35a12.5 12.5 0 0 0 3.3-24.6A17.5 17.5 0 0 0 19.6 15 14.5 14.5 0 0 0 14.5 44z" fill="#fffafd"/><ellipse cx="25.5" cy="29" rx="2.4" ry="3" fill="#2c2240"/><ellipse cx="38.5" cy="29" rx="2.4" ry="3" fill="#2c2240"/><path d="M29.4 33.4q2.6 2.4 5.2 0" fill="none" stroke="#2c2240" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="20" cy="34" rx="3.2" ry="2" fill="#f7a8c8" opacity=".7"/><ellipse cx="44" cy="34" rx="3.2" ry="2" fill="#f7a8c8" opacity=".7"/></svg>
+      <h1>Nimbus</h1>
+      <div class="splash-bar" aria-hidden="true"><i id="splashFill"></i></div>
+      <p id="splashText">Gathering clouds</p>
+    </div>
+  </div>
+  <noscript><div class="splash"><div class="splash-inner"><h1>Nimbus</h1><p>Nimbus needs JavaScript to draw its planets.</p></div></div></noscript>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>

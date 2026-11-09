@@ -1,5 +1,5 @@
 // The mascot as one reusable unit: body (GLB + vinyl), face layers, contact shadow, animator.
-// Used by both the studio (studio.html) and the room (index.html).
+// Used by both the studio (studio.html) and the room (room.html) and the app (index.html, via world.js).
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createVinyl } from './vinyl.js';

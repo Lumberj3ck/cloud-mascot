@@ -4,7 +4,7 @@
 //   - Streak milestones unlock room decorations (plant, lamp, trophy, rainbow).
 //   - Joy and energy drift; the cloud's mood (sleepy / sad / worried / determined / happy / love) follows.
 //   - Sleep: it hops into bed, the room goes to night. Tap it to pet; tap the floor and it hops there.
-// Headless test mode: index.html?shot=room&scene=day|celebrate|night|sad|unlocks[&t=sec][&cam=close]
+// Headless test mode: room.html?shot=room&scene=day|celebrate|night|sad|unlocks[&t=sec][&cam=close]
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
