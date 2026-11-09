@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Nimbus's Planets</title>
+  <link rel="icon" href="data:,">
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three/build/three.module.min.js", "three/addons/": "./vendor/three/examples/jsm/" } }
+  </script>
+  <style>
+    :root { --card: rgba(38, 30, 66, .55); --line: rgba(255, 255, 255, .14); --ink: #fbf5ff; --soft: #cbbfe3;
+      --lav: #b79be0; --radius: 20px; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: #2b2450; color: var(--ink); overflow: hidden;
+      font: 15px/1.35 ui-rounded, "SF Pro Rounded", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif; }
+    #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+    .card { position: fixed; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+      box-shadow: 0 12px 34px rgba(10, 5, 30, .35); backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); }
+    button { font: inherit; color: inherit; cursor: pointer; }
+    .habits { top: 16px; left: 16px; width: 300px; padding: 14px; }
+    .habits header { display: flex; align-items: baseline; justify-content: space-between; margin: 0 4px 10px; }
+    .habits h1 { margin: 0; font-size: 19px; }
+    .habits .day { color: var(--soft); font-size: 13px; }
+    #planetList { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+    #planetList li { border: 1px solid var(--line); border-radius: 16px; padding: 9px 10px; background: rgba(255,255,255,.05); transition: background .2s; }
+    #planetList li.focused { background: rgba(255,255,255,.13); }
+    .pl { width: 100%; display: flex; align-items: center; gap: 10px; background: none; border: 0; padding: 0; text-align: left; }
+    .pl i { width: 26px; height: 26px; border-radius: 50%; box-shadow: 0 0 14px rgba(255,255,255,.35) inset; flex: none; }
+    .pl .nm { flex: 1; display: grid; }
+    .pl small { color: var(--soft); font-size: 12px; }
+    .pl .streak { font-weight: 700; font-size: 20px; min-width: 26px; text-align: right; }
+    .bar { height: 6px; border-radius: 6px; background: rgba(255,255,255,.12); margin: 8px 0 8px 36px; overflow: hidden; }
+    .bar i { display: block; height: 100%; background: linear-gradient(90deg, #f7b6cf, #c8b4f0); border-radius: inherit; transition: width .6s cubic-bezier(.2,.8,.2,1); }
+    .done { margin-left: 36px; border: 1px solid var(--line); background: rgba(255,255,255,.08); border-radius: 12px; padding: 5px 12px; font-size: 13px; }
+    .done.on { background: #b79be0; border-color: #b79be0; color: #2b2450; font-weight: 700; }
+    .actions { left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 6px; padding: 7px; border-radius: 22px; }
+    .actions button { border: 0; background: transparent; padding: 10px 16px; border-radius: 16px; font-weight: 600; white-space: nowrap; }
+    .actions button:hover { background: rgba(255,255,255,.1); }
+    .actions .primary { background: #fbf5ff; color: #2b2450; }
+    #decorate { top: 16px; right: 16px; width: 280px; padding: 14px; transform: translateX(120%); transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+    #decorate.open { transform: none; }
+    #decorate h2 { margin: 0 2px 4px; font-size: 16px; }
+    #decHint { margin: 0 2px 10px; color: var(--soft); font-size: 12.5px; }
+    #itemGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .item { border: 1px solid var(--line); background: rgba(255,255,255,.07); border-radius: 14px; padding: 6px; display: grid; gap: 2px; justify-items: center; font-size: 11.5px; }
+    .item img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #efe9f3; }
+    .item.armed { outline: 2px solid #ffe2a0; background: rgba(255,226,160,.18); }
+    .item.locked { opacity: .45; cursor: not-allowed; }
+    .item small { color: var(--soft); font-size: 10px; text-align: center; }
+    #toasts { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); display: grid; gap: 8px; justify-items: center; pointer-events: none; }
+    .toast { padding: 10px 16px; border-radius: 16px; background: rgba(251,245,255,.95); color: #2b2450; font-weight: 600; font-size: 14px; animation: in .35s cubic-bezier(.2,.9,.3,1.3); transition: opacity .5s, transform .5s; }
+    .toast.big { background: linear-gradient(135deg, #ffe2a0, #f7b6cf); }
+    .toast.warn { background: #cbbfe3; }
+    .toast.out { opacity: 0; transform: translateY(-8px); }
+    @keyframes in { from { opacity: 0; transform: translateY(-10px) scale(.96); } }
+    body.shot .card, body.shot #toasts { display: none; }
+    body.shot.ui .card { display: block; }
+    body.shot.ui .actions { display: flex; }
+    @media (max-width: 820px) {
+      .habits { top: auto; bottom: 84px; left: 12px; right: 12px; width: auto; padding: 10px; }
+      #planetList { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+      #planetList li { padding: 7px; }
+      .pl .nm small, .bar { display: none; }
+      .done { margin: 6px 0 0; width: 100%; }
+      .habits header { display: none; }
+      #decorate { top: 12px; left: 12px; right: 12px; width: auto; }
+      .actions { left: 12px; right: 12px; transform: none; justify-content: space-between; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene" aria-label="Nimbus and its habit planets. Tap a planet to decorate it."></canvas>
+  <aside class="card habits" aria-label="Habit planets">
+    <header><h1>Habit planets</h1><span class="day" id="day">Day 1</span></header>
+    <ul id="planetList"></ul>
+  </aside>
+  <aside class="card" id="decorate" aria-label="Decorate planet">
+    <h2 id="decTitle">Decorate</h2>
+    <p id="decHint"></p>
+    <div id="itemGrid"></div>
+  </aside>
+  <nav class="card actions" aria-label="Actions">
+    <button id="overview">Overview</button>
+    <button id="nextDay" class="primary">Next day →</button>
+    <button id="demoGrow" title="Demo: +3 days on every planet">+3 days</button>
+    <button id="reset">Reset</button>
+  </nav>
+  <div id="toasts" role="status" aria-live="polite"></div>
+  <script type="module" src="js/planets.js"></script>
+</body>
+</html>

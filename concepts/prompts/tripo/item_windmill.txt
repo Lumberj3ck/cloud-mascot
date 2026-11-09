@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_windmill.png
+Object: a small chunky toy windmill: cream round tower, lavender conical roof, four wide cream sails, a small round door, on a tiny grassy base.

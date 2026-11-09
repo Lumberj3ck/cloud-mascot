@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Planet Models</title>
+  <link rel="icon" href="data:,">
+  <script type="importmap">
+  { "imports": { "three": "./vendor/three/build/three.module.min.js", "three/addons/": "./vendor/three/examples/jsm/" } }
+  </script>
+  <style>
+    :root { --bg: #f6f1f8; --ink: #3f3446; --soft: #8d7f96; --card: #fff; --line: #e8def0; }
+    @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #211c2b; --ink: #f2ecf7; --soft: #a99cb5; --card: #2c2638; --line: #3b3349; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.4 ui-rounded, system-ui, sans-serif; }
+    header { padding: 18px 20px 6px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    h1 { margin: 0; font-size: 20px; }
+    header p { margin: 0; color: var(--soft); }
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; padding: 14px 20px 24px; }
+    .cell { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+    .views { display: grid; grid-template-columns: 1fr 1fr; }
+    .views img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+    .view3d { aspect-ratio: 1; }
+    .cell .meta { display: flex; justify-content: space-between; padding: 8px 12px; gap: 8px; }
+    .cell .meta b { font-weight: 600; }
+    .cell .meta span { color: var(--soft); font-size: 12px; }
+    .missing { display: grid; place-items: center; color: var(--soft); font-size: 12px; }
+    #gl { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+  </style>
+</head>
+<body>
+  <header><h1>Pixal3D models</h1><p>reference image (left) · generated model, turning (right)</p></header>
+  <div id="grid"></div>
+  <canvas id="gl"></canvas>
+  <script type="module">
+    import * as THREE from 'three';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    const SHOT = new URLSearchParams(location.search).get('shot');
+    const IDS = ['planet_home', 'planet_ocean', 'planet_book', 'planet_moon', 'planet_meadow', 'planet_lantern', 'planet_tea',
+      'item_fountain', 'item_boat', 'item_lighthouse', 'item_lamp', 'item_armchair', 'item_booktower', 'item_starlantern', 'item_bed',
+      'item_telescope', 'item_flowerpatch', 'item_swingtree', 'item_windmill', 'item_lanternpost', 'item_lotuspond', 'item_bench',
+      'item_teapot', 'item_teahouse', 'item_mushrooms', 'item_mailbox', 'item_rocket'];
+    const available = await fetch('assets/planets/models.json').then((r) => (r.ok ? r.json() : [])).catch(() => []);
+    const canvas = document.getElementById('gl');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: !!SHOT });
+    renderer.setPixelRatio(SHOT ? 1 : Math.min(devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.setScissorTest(true);
+    const env = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+    const grid = document.getElementById('grid');
+    const views = [];
+    for (const id of IDS) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      const has = available.includes(id);
+      cell.innerHTML = `<div class="views"><img src="assets/planets/ref/${id}.jpg" alt="${id} reference">
+        <div class="view3d ${has ? '' : 'missing'}">${has ? '' : 'not generated yet'}</div></div>
+        <div class="meta"><b>${id.replace(/^(planet|item)_/, '')}</b><span class="info">${id.split('_')[0]}</span></div>`;
+      grid.appendChild(cell);
+      if (!has) continue;
+      const scene = new THREE.Scene();
+      scene.environment = env;
+      scene.add(new THREE.HemisphereLight(0xffffff, 0xd8cce6, 1.2));
+      const key = new THREE.DirectionalLight(0xfff4ea, 2.2); key.position.set(-2, 3, 3); scene.add(key);
+      const cam = new THREE.PerspectiveCamera(30, 1, 0.01, 100);
+      const v = { el: cell.querySelector('.view3d'), scene, cam, obj: null, info: cell.querySelector('.info') };
+      views.push(v);
+      loader.loadAsync(`assets/planets/${id}.glb`).then((g) => {
+        const o = g.scene;
+        const box = new THREE.Box3().setFromObject(o), size = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+        o.position.sub(c);
+        const pivot = new THREE.Group(); pivot.add(o); scene.add(pivot);
+        const r = size.length() / 2;
+        cam.position.set(0, r * 0.55, r * 3.4); cam.lookAt(0, 0, 0);
+        let tris = 0; o.traverse((m) => { if (m.isMesh) tris += (m.geometry.index ? m.geometry.index.count : m.geometry.attributes.position.count) / 3; });
+        v.info.textContent = `${Math.round(tris / 1000)}k tris`;
+        v.obj = pivot;
+      });
+    }
+    function frame(t) {
+      const w = innerWidth, h = innerHeight;
+      if (canvas.width !== w * renderer.getPixelRatio() || canvas.height !== h * renderer.getPixelRatio()) renderer.setSize(w, h, false);
+      renderer.setScissor(0, 0, w, h); renderer.setClearColor(0x000000, 0); renderer.clear();
+      for (const v of views) {
+        const r = v.el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > h || !v.obj) continue;
+        if (!SHOT) v.obj.rotation.y = t * 0.0005;
+        else v.obj.rotation.y = -0.5;
+        v.cam.aspect = r.width / r.height; v.cam.updateProjectionMatrix();
+        renderer.setViewport(r.left, h - r.bottom, r.width, r.height);
+        renderer.setScissor(r.left, h - r.bottom, r.width, r.height);
+        renderer.render(v.scene, v.cam);
+      }
+    }
+    if (SHOT) {
+      const wait = () => views.every((v) => v.obj) ? Promise.resolve() : new Promise((r) => setTimeout(() => wait().then(r), 100));
+      await wait(); frame(0); requestAnimationFrame(() => { frame(0); document.title = 'done'; });
+    } else renderer.setAnimationLoop(frame);
+  </script>
+</body>
+</html>

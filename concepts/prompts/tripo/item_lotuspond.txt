@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_lotuspond.png
+Object: a small round pond with a rim of rounded grey pebbles, calm turquoise water (solid stylized), two pink lotus flowers and three green lily pads.

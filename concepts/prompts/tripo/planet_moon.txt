@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_moon.png
+Object: THE SLEEP PLANET. A small round moon (a full sphere, slightly squashed), soft pale cream-yellow with gentle round craters, a faint warm inner glow, a few tiny soft lavender clouds hugging its lower half. Nothing tall on it (decorations are added later).

@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_mailbox.png
+Object: a cute round-topped mailbox in lavender with a small peach flag raised, on a short wooden post with a tiny grassy base.

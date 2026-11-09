@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_starlantern.png
+Object: a paper star lantern on a short wooden post, five-pointed, softly glowing warm cream from inside.

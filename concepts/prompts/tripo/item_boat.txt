@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_boat.png
+Object: a small cute toy sailboat, round hull in peach, cream triangular sail with a lavender stripe, on a tiny base of stylized solid water.

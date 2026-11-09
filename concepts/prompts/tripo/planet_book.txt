@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_book.png
+Object: THE READING PLANET. A small round planetoid (a full sphere, slightly squashed) whose crust is made of layered cream paper pages and soft pastel book covers wrapping around it like geological strata, a few bookmark ribbons hanging off its sides, a flat mossy patch on top. Nothing tall on it (decorations are added later).

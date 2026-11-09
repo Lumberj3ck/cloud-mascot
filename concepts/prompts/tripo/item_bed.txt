@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_bed.png
+Object: a round pet-style cushion bed: a plump lavender ring-shaped rim around a flat cream mattress, a small white pillow resting on the mattress. Seen from slightly above so the cream inside and the pillow are clearly visible.

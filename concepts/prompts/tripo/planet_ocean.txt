@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_ocean.png
+Object: THE HYDRATE PLANET. A small round planetoid (full sphere, slightly squashed) covered in calm turquoise water with soft stylized wave ridges; on top a clearly visible round sandy island (about a third of the planet's width) with one small palm tree and two pebbles, ringed by white foam. Nothing else tall.

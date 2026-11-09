@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_teahouse.png
+Object: a tiny round tea house: cream walls with round windows glowing warm, a curved lavender-tiled roof with upturned corners, a small wooden porch, on a small stone base.

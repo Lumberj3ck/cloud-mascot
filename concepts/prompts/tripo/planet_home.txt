@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_home.png
+Object: THE HOME PLANET. A small round planetoid (full sphere, slightly squashed): lower half made of soft LAVENDER-PURPLE stone (clearly purple, not grey) with a few rounded bumps, upper half covered in a thick cap of soft velvety mint-green moss whose edge drips down in soft rounded scallops; the very top is a smooth flat mossy clearing; three tiny pastel flowers on the moss. Nothing tall on it.

@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_booktower.png
+Object: a playful tower of six chunky stacked books in pastel colours, slightly crooked, with an open book on top.

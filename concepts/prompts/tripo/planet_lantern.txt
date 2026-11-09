@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_lantern.png
+Object: THE MINDFUL PLANET. A small round planetoid (full sphere, slightly squashed) of soft peach-pink stone with a smooth flat top terrace of pale cream sand raked in gentle concentric circles (a zen garden), a few round grey stepping stones, and a faint warm glow. Nothing tall on it.

@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_armchair.png
+Object: a small cosy armchair, clearly readable shape: a tall rounded lavender back with three soft vertical cushion lobes, two chunky rounded armrests, a thick cream seat cushion, four short light-wood legs. Strong colour contrast between lavender upholstery and cream cushion. Seen from the front-left at a gentle angle so the seat is visible.

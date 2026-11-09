@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_lamp.png
+Object: a small cute reading lamp: a curved brass arm with a round cream lampshade and a warm glow, on a round wooden base.

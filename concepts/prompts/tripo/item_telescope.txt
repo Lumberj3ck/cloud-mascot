@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_telescope.png
+Object: a small chunky brass telescope on a wooden tripod, pointing up at an angle.

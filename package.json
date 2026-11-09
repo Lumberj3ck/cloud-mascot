@@ -6,6 +6,7 @@
     "shots": "node scripts/shoot.mjs"
   },
   "devDependencies": {
+    "@gltf-transform/cli": "4.5.1",
     "puppeteer-core": "23.11.1",
     "three": "0.170.0"
   }

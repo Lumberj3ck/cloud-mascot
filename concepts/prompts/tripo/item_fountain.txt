@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_fountain.png
+Object: a small cute stone birdbath fountain with three tiers, pale stone and turquoise water, a little stream arching from the top (solid stylized water, not thin).

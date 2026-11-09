@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_lanternpost.png
+Object: a short wooden post with a curved arm holding a round glowing paper lantern (warm cream glow, lavender ribs), on a small round stone base.

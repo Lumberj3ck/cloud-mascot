@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_tea.png
+Object: THE TEA PLANET. A small round planetoid (full sphere, slightly squashed) whose upper half is soft green terraced tea fields in neat rounded rows and whose lower half is warm sandy-beige stone, with a tiny trickling blue stream. Nothing tall on it.

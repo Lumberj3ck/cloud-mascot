@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_teapot.png
+Object: a big chunky cute teapot, round body in soft mint glaze with cream polka dots, short spout, arched handle, a small steam swirl on top made of solid soft white shape.

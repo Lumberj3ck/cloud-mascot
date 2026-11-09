@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_lighthouse.png
+Object: a small chunky toy lighthouse, cream and lavender stripes, a glowing warm lantern room on top, sitting on a little rock base.

@@ -1,0 +1,2 @@
+Save to: assets_src/planets/planet_meadow.png
+Object: THE MOVEMENT PLANET. A small round planetoid (full sphere, slightly squashed) covered in soft rolling meadow hills of mint and sage green with tiny pink and white flowers, a small winding dirt path circling it, and a lavender-grey rocky underside peeking out at the bottom. Nothing tall on it.

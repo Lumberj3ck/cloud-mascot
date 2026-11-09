@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_mushrooms.png
+Object: a cluster of three cute glowing mushrooms of different heights, cream stems, soft lavender and peach caps with cream spots, on a small mossy base.

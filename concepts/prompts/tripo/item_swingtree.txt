@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_swingtree.png
+Object: a small round tree with a fluffy mint-green canopy and a light-brown trunk, a simple wooden swing hanging from one branch on two ropes, on a tiny grassy base.

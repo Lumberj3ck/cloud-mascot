@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_bench.png
+Object: a small chunky wooden garden bench with rounded edges, light-wood planks, lavender-painted legs.

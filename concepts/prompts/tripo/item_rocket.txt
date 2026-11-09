@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_rocket.png
+Object: a small chunky toy rocket, cream body with lavender fins and nose cone, a round porthole window with a brass rim, standing upright on its fins.

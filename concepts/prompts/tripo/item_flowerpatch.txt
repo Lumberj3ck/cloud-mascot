@@ -1,0 +1,2 @@
+Save to: assets_src/planets/item_flowerpatch.png
+Object: a small round patch of grass with a cluster of chunky pastel tulips and daisies (pink, peach, cream, lavender), on a tiny grassy base.

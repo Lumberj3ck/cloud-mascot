@@ -41,10 +41,13 @@ $PY scripts/bake_shadow.py
 
 echo "== 6. site: vendor pinned three.js"
 [ -d node_modules/three ] || npm ci
-mkdir -p site/vendor/three/build site/vendor/three/examples/jsm/{loaders,controls,utils,environments,geometries}
+mkdir -p site/vendor/three/build site/vendor/three/examples/jsm/{loaders,controls,utils,environments,geometries,libs,postprocessing,shaders}
 cp node_modules/three/build/three.module.min.js site/vendor/three/build/
 cp node_modules/three/LICENSE site/vendor/three/
-for f in loaders/GLTFLoader.js controls/OrbitControls.js utils/BufferGeometryUtils.js environments/RoomEnvironment.js geometries/RoundedBoxGeometry.js; do
+for f in loaders/GLTFLoader.js controls/OrbitControls.js utils/BufferGeometryUtils.js environments/RoomEnvironment.js geometries/RoundedBoxGeometry.js libs/meshopt_decoder.module.js \
+         postprocessing/EffectComposer.js postprocessing/RenderPass.js postprocessing/UnrealBloomPass.js postprocessing/OutputPass.js \
+         postprocessing/ShaderPass.js postprocessing/MaskPass.js postprocessing/Pass.js shaders/CopyShader.js \
+         shaders/LuminosityHighPassShader.js shaders/OutputShader.js; do
   cp "node_modules/three/examples/jsm/$f" "site/vendor/three/examples/jsm/$f"
 done
 
