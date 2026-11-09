@@ -25,6 +25,14 @@ flowers) and unlocks themed items you can place on it. Miss a day and it shrinks
   vines and flowers placed on each model's real surface that grow with the streak in the vertex shader, vine
   garlands with glowing bulbs and lanterns, glowing round windows, a shader waterfall, stepping stones, fireflies.
 - Look (`site/js/spacelook.js`): painted pastel sky, clay finish for the generated models, bloom + vignette.
+- Cloudscape (`site/js/cloudscape.js`): generated lavender-and-peach sky artwork behind the live planet scene,
+  with responsive cover cropping, slow drift, reduced-motion support, and a procedural sky fallback.
+  The optimized artwork ships locally as `site/assets/cloudscape-v1.jpg` (167 KB).
+- Thick fog (`site/js/thick-fog.js`): a continuous world-space volume integrated up to each visible surface,
+  filling the gaps and partially obscuring the islands from every viewing direction, without a bounding box.
+  A small clearing keeps Nimbus readable, and a distance fade keeps nearby surfaces clear when decorating.
+  Compositing retains full fog in empty space and 10% of its strength over solid surfaces for clearer planets.
+  The fog runs at half resolution with depth-aware upsampling, gentle density drift, and reduced-motion support.
 
 All 27 models (`site/models.html` shows them next to their reference images):
 

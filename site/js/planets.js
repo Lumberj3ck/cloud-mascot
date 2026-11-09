@@ -14,7 +14,9 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { createMascot } from './mascot.js';
 import { Particles } from './fx.js';
-import { makeSky, clayify, makeComposer, contactBlob } from './spacelook.js';
+import { clayify, makeComposer, contactBlob } from './spacelook.js';
+import { makeCloudscape } from './cloudscape.js';
+import { ThickFogPass } from './thick-fog.js';
 import { surfaceSamples, makeVines, makeFlowers, Garland, makeWindow, makeWaterfall, makeStones, makeFireflies } from './cozy.js';
 
 const params = new URLSearchParams(location.search);
@@ -73,8 +75,7 @@ controls.maxDistance = 32;
 controls.maxPolarAngle = Math.PI * 0.62;
 
 // backdrop: painted pastel cosmos + stars + a sea of clouds below (site/js/spacelook.js)
-const skyFx = makeSky(scene);
-const seaFx = { update() {} };   // the cloud sea is painted into the sky shader (no card edges)
+const skyFx = makeCloudscape(scene);
 
 // lights (studio-tuned values from assets/look.json are applied once the mascot loads)
 // lights: lavender sky + warm cloud-sea bounce, warm key from the front-left, strong cool rim from behind
@@ -86,7 +87,7 @@ const rim2 = new THREE.DirectionalLight(0xffbe8c, 1.6);          // low warm sun
 rim2.position.set(-8, 5, -6);
 scene.add(hemi, key, rim, rim2);
 
-scene.fog = new THREE.Fog('#a58cd0', 20, 44);   // a little depth haze on the far planets
+scene.fog = null;   // Fog is integrated through the space between camera and surfaces below.
 const cozyU = { time: { value: 0 }, px: { value: 1 } };
 scene.add(makeFireflies(cozyU));
 const homeGlow = new THREE.PointLight('#ffb370', 9, 7, 1.6);   // warm light from home's windows onto Nimbus + garlands
@@ -96,6 +97,9 @@ scene.add(homeGlow);
 const fx = new Particles(5);
 scene.add(fx.points);
 const post = makeComposer(renderer, scene, camera, { bloom: 0.34, radius: 0.45, threshold: 0.98 });
+const fogPass = new ThickFogPass(scene, camera);
+post.composer.removePass(post.composer.passes[0]);
+post.composer.insertPass(fogPass, 0);
 
 // ------------------------------------------------------------------ models
 const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
@@ -545,7 +549,7 @@ function step(dt, time) {
   fx.update(dt);
   skyFx.update(time, renderer);
   cozyU.px.value = renderer.getPixelRatio();
-  seaFx.update(time);
+  fogPass.time = time;
 }
 
 function render() {
@@ -625,6 +629,7 @@ async function main() {
   controls.addEventListener('start', () => { camHold = 0; });
 
   if (SHOT) {
+    await skyFx.ready;
     controls.enabled = false;
     document.body.classList.add('shot');
     if (params.has('ui')) document.body.classList.add('ui');
