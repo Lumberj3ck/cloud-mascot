@@ -65,7 +65,7 @@ export async function createWorld({ canvas, onProgress = () => {}, still = false
   const fx = new Particles(5);
   scene.add(fx.points);
   const post = makeComposer(renderer, scene, camera, { bloom: 0.34, radius: 0.45, threshold: 0.98 });
-  const fogPass = new ThickFogPass(scene, camera);
+  const fogPass = new ThickFogPass(scene, camera, { center: CLUSTER.center, radii: new THREE.Vector3(7.6, 5.6, 5.4) });
   post.composer.removePass(post.composer.passes[0]);
   post.composer.insertPass(fogPass, 0);
 

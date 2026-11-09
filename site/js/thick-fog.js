@@ -6,8 +6,12 @@ const vertexShader = `varying vec2 vUv;
 
 // Integrate continuous fog through world space, stopping at the visible surface.
 // No billboard clouds: empty space and the planets share the same fog volume.
+// Seen from far away (overview, zoomed out) the fog pulls in to a soft ellipsoid
+// around the planet cluster: the gaps between planets stay misty, while the air
+// between the camera and the cluster and the sky around it stay clear.
+// Close up (inside the cluster) it is the full unbounded atmosphere again.
 export class ThickFogPass extends Pass {
-  constructor(scene, camera) {
+  constructor(scene, camera, { center = new THREE.Vector3(), radii = new THREE.Vector3(8, 6, 5), confineFrom = 9, confineTo = 15 } = {}) {
     super();
     this.scene = scene;
     this.camera = camera;
@@ -35,6 +39,7 @@ export class ThickFogPass extends Pass {
         sceneDepth: { value: this.sceneTarget.depthTexture }, noiseMap: { value: this.noise },
         projectionInverse: { value: camera.projectionMatrixInverse }, cameraWorld: { value: camera.matrixWorld },
         cameraPositionWorld: { value: new THREE.Vector3() }, time: { value: 0 }, gain: { value: 1 },
+        volumeCenter: { value: center.clone() }, volumeRadii: { value: radii.clone() }, confine: { value: 0 },
         shadowColor: { value: new THREE.Color('#795a9e') },
         lightColor: { value: new THREE.Color('#c9a2cd') },
       },
@@ -43,8 +48,10 @@ export class ThickFogPass extends Pass {
         uniform sampler2D sceneDepth;
         uniform sampler3D noiseMap;
         uniform mat4 projectionInverse, cameraWorld;
-        uniform vec3 cameraPositionWorld, shadowColor, lightColor;
-        uniform float time, gain;
+        uniform vec3 cameraPositionWorld, shadowColor, lightColor, volumeCenter, volumeRadii;
+        uniform float time, gain, confine;
+        // Soft edge of the cluster fog, in units of the ellipsoid radii.
+        const float EDGE_IN = .75, EDGE_OUT = 1.2;
         void main() {
           float depth = texture2D(sceneDepth, vUv).x;
           vec4 view = projectionInverse * vec4(vUv * 2. - 1., depth * 2. - 1., 1.);
@@ -53,12 +60,25 @@ export class ThickFogPass extends Pass {
           float surface = length(endpoint - cameraPositionWorld);
           // An unbounded atmosphere has no box edges to reveal while orbiting.
           // Cap integration distance only; by then the dense layer is opaque.
-          float end = min(surface, 80.);
-          float stepSize = end / 40.;
+          float start = 0., end = min(surface, 80.);
+          if (confine > 0.) {
+            // Ray vs the outer ellipsoid shell: when confined, only that span holds fog,
+            // so spend all 40 samples there. Blending the bounds with confine keeps the
+            // zoom transition continuous (density outside fades by the same factor).
+            vec3 o = (cameraPositionWorld - volumeCenter) / (volumeRadii * EDGE_OUT);
+            vec3 d = ray / (volumeRadii * EDGE_OUT);
+            float a = dot(d, d), b = dot(o, d), c = dot(o, o) - 1.;
+            float disc = b * b - a * c;
+            float t0 = end, t1 = end;
+            if (disc > 0.) { float sq = sqrt(disc); t0 = max((-b - sq) / a, 0.); t1 = max((-b + sq) / a, 0.); }
+            start = min(mix(0., t0, confine), end);
+            end = min(mix(end, t1, confine), end);
+          }
+          float stepSize = max(end - start, 0.) / 40.;
           float transmission = 1.;
           vec3 scattered = vec3(0.);
           for (int i = 0; i < 40; i++) {
-            float distanceAlongRay = (float(i) + .5) * stepSize;
+            float distanceAlongRay = start + (float(i) + .5) * stepSize;
             vec3 p = cameraPositionWorld + ray * distanceAlongRay;
             vec3 wind = vec3(time * .008, 0., time * .004);
             float n = texture(noiseMap, p * .038 + wind).r;
@@ -72,7 +92,11 @@ export class ThickFogPass extends Pass {
             // distance rather than the former boundary on the front Z axis.
             float nearbyFade = smoothstep(5., 10., distanceAlongRay);
             float clearing = mix(.10, 1., smoothstep(1.4, 3.5, length((p - vec3(0., .65, 0.)) * vec3(1., 1.5, 1.))));
-            float density = .22 * height * (.35 + n * .9 + detail * .25) * nearbyFade * clearing;
+            float shell = length((p - volumeCenter) / volumeRadii) + (n - .5) * .25;
+            // The confined span is far shorter than the open atmosphere, so thicken it
+            // to keep the gaps between planets as misty as before.
+            float region = mix(1., (1. - smoothstep(EDGE_IN, EDGE_OUT, shell)) * 2.6, confine);
+            float density = .22 * height * (.35 + n * .9 + detail * .25) * nearbyFade * clearing * region;
             float alpha = 1. - exp(-density * stepSize);
             float light = clamp(.48 + p.y * .065 + (n - .5) * .25, .15, .85);
             vec3 color = mix(shadowColor, lightColor, light) * gain;
@@ -122,6 +146,8 @@ export class ThickFogPass extends Pass {
         }`,
     });
     this.quad = new FullScreenQuad(this.fogMaterial);
+    this.confineFrom = confineFrom;
+    this.confineTo = confineTo;
   }
   setSize(width, height) {
     this.sceneTarget.setSize(width, height);
@@ -137,6 +163,8 @@ export class ThickFogPass extends Pass {
     this.camera.getWorldPosition(u.cameraPositionWorld.value);
     u.time.value = this.reducedMotion.matches ? 0 : this.time;
     u.gain.value = 1 / Math.max(renderer.toneMappingExposure, .05);
+    const far = u.cameraPositionWorld.value.distanceTo(u.volumeCenter.value);
+    u.confine.value = THREE.MathUtils.smoothstep(far, this.confineFrom, this.confineTo);
     this.quad.material = this.fogMaterial;
     renderer.setRenderTarget(this.fogTarget);
     this.quad.render(renderer);
