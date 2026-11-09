@@ -1,0 +1,24 @@
+{
+ "ref": {
+  "eye_mid_x": -0.1397,
+  "eye_spacing": 0.4456,
+  "eye_y": 0.82265,
+  "eye_w": 0.1213,
+  "eye_h": 0.14285,
+  "mouth_x": -0.1656,
+  "mouth_y": 0.7584,
+  "mouth_w": 0.1521,
+  "mouth_h": 0.0596
+ },
+ "ours": {
+  "eye_mid_x": -0.13585,
+  "eye_spacing": 0.4421,
+  "eye_y": 0.82235,
+  "eye_w": 0.13005,
+  "eye_h": 0.14655,
+  "mouth_x": -0.1585,
+  "mouth_y": 0.7641,
+  "mouth_w": 0.1548,
+  "mouth_h": 0.0599
+ }
+}

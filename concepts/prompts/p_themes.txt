@@ -1,0 +1,7 @@
+Save to: concepts/planet_A_themes.png
+CUSTOMISATION: PLANET THEMES. One image split into a clean 2x2 grid of four equal panels (thin cream gutters between them, no labels). Each panel shows the SAME tiny round planetoid with the mascot sitting on top, in a different user-selectable biome and sky theme:
+ 1) top-left: spring moss meadow, mint and lavender moss, tiny flowers, pastel violet nebula sky;
+ 2) top-right: snowy winter planet, soft snow caps, tiny frosted pine trees, a little igloo, icy blue-pink aurora sky;
+ 3) bottom-left: candy desert planet, peach dunes, round cacti, a tiny oasis pond, warm sunset-orange nebula;
+ 4) bottom-right: ocean planet, mostly calm turquoise water with a few tiny sandy islands and palm trees, soft teal starry sky.
+Same camera angle and composition in all four, so the difference is clearly the theme.

@@ -1,0 +1,6 @@
+Save to: concepts/globe_A_themes.png
+CUSTOMISATION: TERRARIUM THEMES. One image split into a clean 2x2 grid of four equal panels (thin cream gutters, no labels). Each panel shows a glass dome terrarium with the mascot inside, with a different user-selectable theme for the inside, the dome/base and the scene outside:
+ 1) top-left: spring meadow inside (hills, tiny pond, little round door), classic clear glass dome on a light oak base, sunny windowsill with a pink dusk city outside;
+ 2) top-right: winter wonderland inside with gently falling snow, tiny frosted pines, a little cabin, round snow-globe sphere on a ceramic white base, cosy room with warm fairy lights outside;
+ 3) bottom-left: beach cove inside with turquoise water, sand, a tiny palm and parasol, a hexagonal brass-framed glass terrarium on a woven base, seaside window with ocean outside;
+ 4) bottom-right: enchanted night forest inside with fireflies and glowing mushrooms, a tall bell jar on a dark walnut base, a bookshelf at night with a desk lamp outside.

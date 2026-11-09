@@ -1,0 +1,12 @@
+{
+  "name": "cloud-mascot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "shots": "node scripts/shoot.mjs"
+  },
+  "devDependencies": {
+    "puppeteer-core": "23.11.1",
+    "three": "0.170.0"
+  }
+}

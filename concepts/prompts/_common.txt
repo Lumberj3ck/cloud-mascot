@@ -1,0 +1,5 @@
+Use your image generation tool to create exactly ONE image and save it to the path given below (relative to the current directory). Create no other files and edit nothing else.
+
+The attached image is our mascot: a limbless, cloud-shaped blob in pale lavender soft-touch matte vinyl with a tiny cute face (two small dark-brown glossy eyes with white highlights, a small curved smile, soft pink blush). Keep the character exactly like the attachment (same three-lobe cloud shape, same lavender colour, same matte vinyl material, same tiny face). It is the clear hero of the image, small-to-medium in frame, sitting naturally in its world.
+
+Concept art for the home world of this mascot in a habit-streak app. Wide 16:9. Premium soft 3D render look: designer-vinyl-toy diorama, soft global illumination, gentle depth of field, calm and minimal, harmonious pastel palette built around the mascot's lavender. No text, no letters, no UI, no watermark.
