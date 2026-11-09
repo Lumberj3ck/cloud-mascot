@@ -67,11 +67,6 @@ sleeping planet is small and faded. Earlier screenshots of the world from the pr
 - Cloudscape (`site/js/cloudscape.js`): generated lavender-and-peach sky artwork behind the live planet scene,
   with responsive cover cropping, slow drift, reduced-motion support, and a procedural sky fallback.
   The optimized artwork ships locally as `site/assets/cloudscape-v1.jpg` (167 KB).
-- Thick fog (`site/js/thick-fog.js`): a continuous world-space volume integrated up to each visible surface,
-  filling the gaps and partially obscuring the islands from every viewing direction, without a bounding box.
-  A small clearing keeps Nimbus readable, and a distance fade keeps nearby surfaces clear when decorating.
-  Compositing retains full fog in empty space and 10% of its strength over solid surfaces for clearer planets.
-  The fog runs at half resolution with depth-aware upsampling, gentle density drift, and reduced-motion support.
 
 All 27 models (`site/models.html` shows them next to their reference images):
 

@@ -1,5 +1,5 @@
 // The 3D world: Nimbus on its home planet, the six habit planets floating around it, strung with vine garlands
-// (cozy layer: cozy.js), painted cloudscape behind (cloudscape.js), continuous fog (thick-fog.js).
+// (cozy layer: cozy.js), painted cloudscape behind (cloudscape.js).
 // No game rules and no DOM UI here: app.js feeds it a view of the game state and listens to taps.
 //
 //   const world = await createWorld({ canvas, onProgress });
@@ -14,7 +14,6 @@ import { createMascot } from './mascot.js';
 import { Particles } from './fx.js';
 import { clayify, makeComposer, contactBlob } from './spacelook.js';
 import { makeCloudscape } from './cloudscape.js';
-import { ThickFogPass } from './thick-fog.js';
 import { surfaceSamples, makeVines, makeFlowers, Garland, makeWindow, makeWaterfall, makeStones, makeFireflies } from './cozy.js';
 import { Wardrobe } from './wardrobe.js';
 
@@ -65,9 +64,6 @@ export async function createWorld({ canvas, onProgress = () => {}, still = false
   const fx = new Particles(5);
   scene.add(fx.points);
   const post = makeComposer(renderer, scene, camera, { bloom: 0.34, radius: 0.45, threshold: 0.98 });
-  const fogPass = new ThickFogPass(scene, camera, { center: CLUSTER.center, radii: new THREE.Vector3(7.6, 5.6, 5.4) });
-  post.composer.removePass(post.composer.passes[0]);
-  post.composer.insertPass(fogPass, 0);
 
   // ---------------------------------------------------------------- loading (parallel, with real progress)
   const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
@@ -412,7 +408,6 @@ export async function createWorld({ canvas, onProgress = () => {}, still = false
     fx.update(dt);
     skyFx.update(time, renderer);
     cozyU.px.value = renderer.getPixelRatio();
-    fogPass.time = time;
   }
   function render() {
     camera.updateMatrixWorld();
